@@ -54,10 +54,10 @@ public class ProxyServiceImp implements ProxyService {
 
     @Override
     @Async
-    public ScrapingResults scrapAndParse(String[] parsParams,String[] url, Map<String, String> userHeaders) 
+    public ScrapingResults scrapAndParse(String[] parsParams,String[] urls, Map<String, String> userHeaders) 
     throws Exception {
 
-        CompletableFuture<String[]> future = parallelScraping(url, userHeaders);
+        CompletableFuture<String[]> future = parallelScraping(urls, userHeaders);
 
         String[] results = parserService.parse(future.get(), parsParams).get();
 

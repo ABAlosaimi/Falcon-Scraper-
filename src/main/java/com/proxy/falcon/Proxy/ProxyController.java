@@ -14,7 +14,6 @@ import com.proxy.falcon.Proxy.Dto.ScrapingResults;
 @RequestMapping("/proxy")
 public class ProxyController {
 
-
     private final ProxyService proxyService;
 
     public ProxyController(ProxyService proxyService){
@@ -23,7 +22,7 @@ public class ProxyController {
 
 
     @GetMapping("/api/scrap")
-    public ResponseEntity<Object> scrap(@RequestParam(name = "urls") ScrapingRequest scrapingRequest, @RequestParam(name = "headers") Map<String, String> userHeaders) 
+    public ResponseEntity<Object> scrap(@RequestParam(name = "urls") ScrapingRequest scrapingRequest, @RequestBody Map<String, String> userHeaders) 
     throws Exception{
     
      ScrapingResults results = proxyService.scrapAndParse(scrapingRequest.getParsParams(), scrapingRequest.getUrls(),userHeaders);
