@@ -17,10 +17,10 @@ public class UrlAndParseParamsValidationInterceptor implements HandlerIntercepto
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String[] urls = request.getParameterValues("urls"); 
-        String[] parsParams = request.getParameterValues("parsParams"); 
+        String[] urls = request.getInputStream().toString().split(","); 
+        String[] parsParams = request.getInputStream().toString().split(","); 
 
-        
+    
         if (urls == null || urls.length == 0) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No URLs provided.");
             return false;
