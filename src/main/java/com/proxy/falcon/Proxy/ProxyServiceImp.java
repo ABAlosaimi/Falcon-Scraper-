@@ -5,7 +5,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -53,19 +52,21 @@ public class ProxyServiceImp implements ProxyService {
 
 
     @Override
-    @Async
     public ScrapingResults scrapAndParse(String[] parsParams,String[] urls, Map<String, String> userHeaders) 
     throws Exception {
 
         CompletableFuture<String[]> future = parallelScraping(urls, userHeaders);
+       
+        if (parsParams != null) {
+            String[] results = parserService.parse(future.get(), parsParams).get();
+            return new ScrapingResults(results);
+        }
 
-        String[] results = parserService.parse(future.get(), parsParams).get();
-
-       return new ScrapingResults(results);
+       return new ScrapingResults(future.get());
        
     }
 
-
+   
     private CompletableFuture<String[]> parallelScraping(String[] urls, Map<String, String> userHeaders) {
         HttpHeaders requestHeaders = new HttpHeaders();
         String userAgent = getRandomUserAgent();
