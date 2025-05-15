@@ -8,17 +8,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Service
 public class ParserServiceImp implements ParserService {
 
-    /**
-     * Parses an array of HTML strings and extracts specific elements.
-     *
-     * @param htmlPages Array of HTML strings to parse.
-     * @return List of extracted data (e.g., links or other elements).
-     */
-    public CompletableFuture<String[]> parse(String[] scrapingResults, String[] parsParams) throws Exception {
+    private final Executor urlsExecutor;
+
+    public ParserServiceImp(Executor urlsExecutor) {
+        this.urlsExecutor = urlsExecutor;
+    }
+
+
+    public String[] parse(String[] scrapingResults, String[] parsParams) throws Exception {
        
         if (scrapingResults == null || scrapingResults.length == 0) {
             throw new IllegalArgumentException("No HTML pages provided for parsing.");
@@ -31,7 +33,7 @@ public class ParserServiceImp implements ParserService {
       CompletableFuture<String[]>[] futures = Arrays.stream(scrapingResults)
                 .map(result -> CompletableFuture.supplyAsync(() -> {
                     try {
-                        List<String> combinedResults = new ArrayList<>(); // for the each page 
+                        List<String> combinedResults = new ArrayList<>(); // for each page 
 
                         Arrays.stream(parsParams).forEach(param -> {
                             // Parse the HTML string into a Jsoup Document
@@ -45,7 +47,7 @@ public class ParserServiceImp implements ParserService {
                                     .forEach(combinedResults::add);
                         });
 
-                        return combinedResults.toArray(); 
+                        return combinedResults.toArray(new String[0]); 
                     } catch (Exception e) {
                         // Handle parsing errors for individual pages
                         return new String[]{"Error parsing page: " + e.getMessage()};
@@ -54,11 +56,10 @@ public class ParserServiceImp implements ParserService {
                 .toArray(CompletableFuture[]::new);
 
         
-        return CompletableFuture.allOf(futures)
-                                .thenApply(v -> Arrays.stream(futures)
-                                .map(CompletableFuture::join) 
-                                .toArray(String[]::new)
-       );
+        return Arrays.stream(futures)
+                .map(future -> ((CompletableFuture<String[]>) future).join())
+                .flatMap(Arrays::stream)
+                .toArray(String[]::new);
 
     }
 }

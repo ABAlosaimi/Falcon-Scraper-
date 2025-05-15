@@ -1,6 +1,5 @@
 package com.proxy.falcon.Proxy;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +14,7 @@ import java.util.concurrent.Executor;
 import org.springframework.web.client.RestTemplate;
 import com.proxy.falcon.Parser.ParserService;
 import com.proxy.falcon.Proxy.Dto.ScrapingResults;
+import com.proxy.falcon.cleaner.CleaningService;
 
 @Service
 public class ProxyServiceImp implements ProxyService {
@@ -22,11 +22,12 @@ public class ProxyServiceImp implements ProxyService {
     private final List<String> userAgents;
     private final SecureRandom random;
     private final RestTemplate restTemplate;
-    @Qualifier("urlsExecutor")
     private final Executor urlsExecutor;
     private final ParserService parserService;
+    private final CleaningService cleaningService;
 
-    public ProxyServiceImp(Executor urlsExecutor, ParserService parserService) {
+    public ProxyServiceImp(Executor urlsExecutor, ParserService parserService, CleaningService cleaningService) {
+        this.cleaningService = cleaningService;
         this.parserService = parserService;
         this.urlsExecutor = urlsExecutor;
 
@@ -52,13 +53,15 @@ public class ProxyServiceImp implements ProxyService {
 
 
     @Override
-    public ScrapingResults scrapAndParse(String[] parsParams,String[] urls, Map<String, String> userHeaders) 
+    public ScrapingResults scrapAndParse(String[] urls,String[] parsParams,String[] cleanParams, Map<String, String> userHeaders) 
     throws Exception {
 
         CompletableFuture<String[]> future = parallelScraping(urls, userHeaders);
        
         if (parsParams != null) {
-            String[] results = parserService.parse(future.get(), parsParams).get();
+            String[] parsedStrings = parserService.parse(future.get(), parsParams);
+            String[] results = cleaningService.clean(parsedStrings, cleanParams);
+
             return new ScrapingResults(results);
         }
 
@@ -67,7 +70,7 @@ public class ProxyServiceImp implements ProxyService {
     }
 
    
-    private CompletableFuture<String[]> parallelScraping(String[] urls, Map<String, String> userHeaders) {
+    private CompletableFuture<String[]> parallelScraping(String[] urls, Map<String, String> userHeaders) throws Exception {
         HttpHeaders requestHeaders = new HttpHeaders();
         String userAgent = getRandomUserAgent();
 
@@ -82,7 +85,7 @@ public class ProxyServiceImp implements ProxyService {
         }
 
         
-        @SuppressWarnings("unchecked")
+       
         CompletableFuture<String>[] futures = Arrays.stream(urls)
             .map(url -> CompletableFuture.supplyAsync(() -> {
                 try {

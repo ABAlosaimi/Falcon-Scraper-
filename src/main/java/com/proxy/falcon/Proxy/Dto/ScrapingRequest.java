@@ -7,5 +7,6 @@ public class ScrapingRequest {
     
     String[] urls;
     String[] parsParams; 
+    String[] cleanParams;
 
 }

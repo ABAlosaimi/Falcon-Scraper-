@@ -19,7 +19,7 @@ public class ProxyConfigs implements WebMvcConfigurer{
         this.urlValidationInterceptor = urlValidationInterceptor;
     }
     
-    @Bean(name = "urlsExecutor")
+    @Bean
     public Executor asynExecutor(){
 
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -33,11 +33,11 @@ public class ProxyConfigs implements WebMvcConfigurer{
     }
 
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(urlValidationInterceptor)
-                .addPathPatterns("/proxy/api/scrap");
-    }
+    // @Override
+    // public void addInterceptors(InterceptorRegistry registry) {
+    //     registry.addInterceptor(urlValidationInterceptor)
+    //             .addPathPatterns("/proxy/api/scrap");
+    // }
     
 
 }

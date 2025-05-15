@@ -25,7 +25,10 @@ public class ProxyController {
     public ResponseEntity<Object> scrap(@RequestBody ScrapingRequest scrapingRequest, @RequestBody(required = false) Map<String, String> userHeaders) 
     throws Exception{
     
-     ScrapingResults results = proxyService.scrapAndParse(scrapingRequest.getParsParams(), scrapingRequest.getUrls(),userHeaders);
+     ScrapingResults results = proxyService.scrapAndParse(scrapingRequest.getUrls(),
+                                                          scrapingRequest.getParsParams(),
+                                                          scrapingRequest.getCleanParams(),
+                                                          userHeaders);
 
      return ResponseEntity.ok().body(results);
 
