@@ -8,15 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @Service
 public class ParserServiceImp implements ParserService {
 
-    private final Executor urlsExecutor;
-
-    public ParserServiceImp(Executor urlsExecutor) {
-        this.urlsExecutor = urlsExecutor;
+    public ParserServiceImp() {
     }
 
 

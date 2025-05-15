@@ -2,18 +2,17 @@ package com.proxy.falcon.cleaner;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class CleaningServiceImp implements CleaningService{
 
-    public CleaningServiceImp(Executor urlExecutor) {
+    public CleaningServiceImp() {
     }
 
     @Override
     public String[] clean(String[] parsedStrings, String[] cleanParams) throws Exception {
+        
         if (cleanParams == null || cleanParams.length == 0) {
             throw new IllegalArgumentException("No cleaning parameters provided.");
         }
