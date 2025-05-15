@@ -1,5 +1,6 @@
 package com.proxy.falcon.Proxy;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -55,6 +56,8 @@ public class ProxyServiceImp implements ProxyService {
 
 
     @Override
+    @Cacheable(value = "scrapingCache", key = "#urls")
+    // Cache the results of the scraping operation
     public ScrapingResults scrapAndParse(String[] urls,String[] parsParams,String[] cleanParams, Map<String, String> userHeaders) 
     throws Exception {
 
@@ -65,7 +68,7 @@ public class ProxyServiceImp implements ProxyService {
             String[] results = cleaningService.clean(parsedStrings, cleanParams);
 
             return new ScrapingResults(results);
-            
+
         }else if (parsParams != null) {
             String[] parsedStrings = parserService.parse(future.get(), parsParams);
             return new ScrapingResults(parsedStrings);
