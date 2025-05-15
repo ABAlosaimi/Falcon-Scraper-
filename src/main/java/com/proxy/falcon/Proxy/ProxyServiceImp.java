@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import org.springframework.web.client.RestTemplate;
+
+import com.proxy.falcon.Exception.UnvalidURLException;
 import com.proxy.falcon.Parser.ParserService;
 import com.proxy.falcon.Proxy.Dto.ScrapingResults;
 import com.proxy.falcon.cleaner.CleaningService;
@@ -98,7 +100,7 @@ public class ProxyServiceImp implements ProxyService {
 
                     return response.getBody();
                 } catch (Exception e) {
-                    throw new RuntimeException("Error fetching URL: " + url, e);
+                    throw new UnvalidURLException("Error fetching URL:" + url);
                 }
             }, urlsExecutor))
             .toArray(size -> new CompletableFuture[size]);

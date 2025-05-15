@@ -6,19 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableAsync
 public class ProxyConfigs implements WebMvcConfigurer{
-
-    private UrlAndParseParamsValidationInterceptor urlValidationInterceptor;
-
-    public ProxyConfigs(UrlAndParseParamsValidationInterceptor urlValidationInterceptor) {
-        this.urlValidationInterceptor = urlValidationInterceptor;
-    }
-    
+ 
     @Bean
     public Executor asynExecutor(){
 
@@ -31,13 +24,5 @@ public class ProxyConfigs implements WebMvcConfigurer{
     
         return executor;
     }
-
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(urlValidationInterceptor)
-                .addPathPatterns("/proxy/api/scrap");
-    }
-    
 
 }

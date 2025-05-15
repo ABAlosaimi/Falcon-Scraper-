@@ -4,6 +4,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+
+import com.proxy.falcon.Exception.ParsePageException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +48,7 @@ public class ParserServiceImp implements ParserService {
 
                         return combinedResults.toArray(new String[0]); 
                     } catch (RuntimeException e) {
-                        // Handle parsing errors for individual pages
-                        return new String[]{"Error parsing page: " + e.getMessage()};
+                         throw new ParsePageException("Error parsing the page: " + result + "check the parsing parameters");
                     }
                 }))
                 .toArray(CompletableFuture[]::new);
