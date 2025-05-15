@@ -60,11 +60,19 @@ public class ProxyServiceImp implements ProxyService {
 
         CompletableFuture<String[]> future = parallelScraping(urls, userHeaders);
        
-        if (parsParams != null) {
+        if (parsParams != null && cleanParams != null) {
             String[] parsedStrings = parserService.parse(future.get(), parsParams);
             String[] results = cleaningService.clean(parsedStrings, cleanParams);
 
             return new ScrapingResults(results);
+            
+        }else if (parsParams != null) {
+            String[] parsedStrings = parserService.parse(future.get(), parsParams);
+            return new ScrapingResults(parsedStrings);
+
+        } else if (cleanParams != null) {
+            String[] cleanedStrings = cleaningService.clean(future.get(), cleanParams);
+            return new ScrapingResults(cleanedStrings);
         }
 
        return new ScrapingResults(future.get());

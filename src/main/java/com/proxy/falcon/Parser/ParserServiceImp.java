@@ -42,7 +42,7 @@ public class ParserServiceImp implements ParserService {
                             Elements extractParseParam = document.select(param);
 
                             extractParseParam.stream()
-                                    .map(element -> element.attributes().toString())
+                                    .map(element -> element.text())
                                     .forEach(combinedResults::add);
                         });
 
