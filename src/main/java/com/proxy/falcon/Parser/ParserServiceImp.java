@@ -44,7 +44,7 @@ public class ParserServiceImp implements ParserService {
                         });
 
                         return combinedResults.toArray(new String[0]); 
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         // Handle parsing errors for individual pages
                         return new String[]{"Error parsing page: " + e.getMessage()};
                     }
