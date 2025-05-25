@@ -34,10 +34,5 @@ public class ProxyController {
 
     }
 
-
-    @GetMapping("/api/hi")
-    public ResponseEntity<Object> hi() {
-        return ResponseEntity.ok().body("hi");
-    }
-     
+   
 }

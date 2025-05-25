@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import org.springframework.web.client.RestTemplate;
-
 import com.proxy.falcon.Exception.UnvalidURLException;
 import com.proxy.falcon.Parser.ParserService;
 import com.proxy.falcon.Proxy.Dto.ScrapingResults;
@@ -57,7 +56,6 @@ public class ProxyServiceImp implements ProxyService {
 
     @Override
     @Cacheable(value = "scrapingCache", key = "#urls")
-    // Cache the results of the scraping operation
     public ScrapingResults scrapAndParse(String[] urls,String[] parsParams,String[] cleanParams, Map<String, String> userHeaders) 
     throws Exception {
 
