@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  falcon-app:
+    build: .
+    container_name: falcon-web-scraper
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - falcon-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: falcon-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - falcon-network
+
+volumes:
+  redis_data:
+
+networks:
+  falcon-network:
+    driver: bridge
