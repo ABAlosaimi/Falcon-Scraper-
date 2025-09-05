@@ -59,24 +59,24 @@ public class ProxyServiceImp implements ProxyService {
     public ScrapingResults scrapAndParse(String[] urls,String[] parsParams,String[] cleanParams, Map<String, String> userHeaders) 
     throws Exception {
 
-        CompletableFuture<String[]> future = parallelScraping(urls, userHeaders);
+        CompletableFuture<String[]> scrapedData = parallelScraping(urls, userHeaders);
        
         if (parsParams != null && cleanParams != null) {
-            String[] parsedStrings = parserService.parse(future.get(), parsParams);
+            String[] parsedStrings = parserService.parse(scrapedData.get(), parsParams);
             String[] results = cleaningService.clean(parsedStrings, cleanParams);
 
             return new ScrapingResults(results);
 
         }else if (parsParams != null) {
-            String[] parsedStrings = parserService.parse(future.get(), parsParams);
+            String[] parsedStrings = parserService.parse(scrapedData.get(), parsParams);
             return new ScrapingResults(parsedStrings);
 
         } else if (cleanParams != null) {
-            String[] cleanedStrings = cleaningService.clean(future.get(), cleanParams);
+            String[] cleanedStrings = cleaningService.clean(scrapedData.get(), cleanParams);
             return new ScrapingResults(cleanedStrings);
         }
 
-       return new ScrapingResults(future.get());
+       return new ScrapingResults(scrapedData.get());
        
     }
 

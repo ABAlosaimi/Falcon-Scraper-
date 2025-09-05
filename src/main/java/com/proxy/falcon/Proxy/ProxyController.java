@@ -1,6 +1,5 @@
 package com.proxy.falcon.Proxy;
 
-import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.proxy.falcon.Proxy.Dto.ScrapingRequest;
 import com.proxy.falcon.Proxy.Dto.ScrapingResults;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/proxy")
@@ -20,14 +21,14 @@ public class ProxyController {
     }
 
 
-    @PostMapping("/api/scrap")
-    public ResponseEntity<Object> scrap(@RequestBody ScrapingRequest scrapingRequest, @RequestBody(required = false) Map<String, String> userHeaders) 
+    @PostMapping("v1/api/scrap/") 
+    public ResponseEntity<ScrapingResults> scrap(@RequestBody @Valid ScrapingRequest scrapingRequest) 
     throws Exception{
     
      ScrapingResults results = proxyService.scrapAndParse(scrapingRequest.getUrls(),
                                                           scrapingRequest.getParsParams(),
                                                           scrapingRequest.getCleanParams(),
-                                                          userHeaders);
+                                                          scrapingRequest.getUserHeaders());
 
      return ResponseEntity.ok().body(results);
 
