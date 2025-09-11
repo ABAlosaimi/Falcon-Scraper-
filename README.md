@@ -39,12 +39,18 @@ Send a JSON object matching the `ScrapingRequest` DTO:
 ```json
 {
   "urls": ["https://example.com", "https://another.com"],
-  "parsParams": ["a[href]", "img[src]"],
+  "parsParams": {
+      "article.post": "h1.title",
+      "ul.products li.product": "a.name"
+  },
   "cleanParams": ["lowercase", "remove_numbers", "strip_whitespace"]
 }
 ```
 - `urls`: Array of HTTP/HTTPS URLs to scrape.
-- `parsParams`: Array of CSS selectors for parsing HTML (e.g., `a[href]`, `img[src]`, `h1`).
+- `parsParams`: A map of CSS selectors for parsing HTML where the key is the
+  container/parent selector and the value is the inner selector whose text will
+  be extracted. Example: `{ "article.post": "h1.title" }` extracts the text
+  of `h1.title` inside each `article.post`.
 - `cleanParams`: Array of cleaning operations (`lowercase`, `remove_numbers`, `remove_special_chars`, `strip_whitespace`).
 
 #### Optional Headers
@@ -81,7 +87,7 @@ curl -X POST http://localhost:8080/proxy/api/scrap \
   -H "Content-Type: application/json" \
   -d '{
     "urls": ["https://example.com"],
-    "parsParams": ["a[href]"],
+    "parsParams": { "div.card": "h2.title" },
     "cleanParams": ["lowercase", "strip_whitespace"]
   }'
 ```

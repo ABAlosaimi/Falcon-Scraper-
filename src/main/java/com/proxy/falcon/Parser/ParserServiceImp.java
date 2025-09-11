@@ -10,6 +10,7 @@ import com.proxy.falcon.Exception.ParsePageException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -19,12 +20,12 @@ public class ParserServiceImp implements ParserService {
     }
 
 
-    public String[] parse(String[] scrapingResults, String[] parsParams) throws Exception {
+    public String[] parse(String[] scrapingResults, Map<String, String> parsParams) throws Exception {
        
         if (scrapingResults == null || scrapingResults.length == 0) {
             throw new IllegalArgumentException("No HTML pages provided for parsing.");
         }
-        if (parsParams == null || parsParams.length == 0) {
+        if (parsParams == null || parsParams.size() == 0) {
             throw new IllegalArgumentException("No parsing parameters provided.");
         }
 
@@ -34,15 +35,15 @@ public class ParserServiceImp implements ParserService {
                     try {
                         List<String> combinedResults = new ArrayList<>(); // for each page 
 
-                        Arrays.stream(parsParams).forEach(param -> {
+                        parsParams.forEach((key, value) -> {
                             // Parse the HTML string into a Jsoup Document
                             Document document = Jsoup.parse(result);
 
                             // Example: Extract all links (anchor tags)
-                            Elements extractParseParam = document.select(param);
+                            Elements extractParseParam = document.select(key);
 
                             extractParseParam.stream()
-                                    .map(element -> element.text())
+                                    .map(element -> element.select(value).text())
                                     .forEach(combinedResults::add);
                         });
 
@@ -53,11 +54,12 @@ public class ParserServiceImp implements ParserService {
                 }))
                 .toArray(CompletableFuture[]::new);
 
-        
-        return Arrays.stream(futures)
+        String[] parsedData = Arrays.stream(futures)
                 .map(future -> ((CompletableFuture<String[]>) future).join())
                 .flatMap(Arrays::stream)
                 .toArray(String[]::new);
+
+        return parsedData;
 
     }
 }

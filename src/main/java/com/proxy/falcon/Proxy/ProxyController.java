@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.proxy.falcon.Proxy.Dto.ScrapingRequest;
 import com.proxy.falcon.Proxy.Dto.ScrapingResults;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -21,7 +20,7 @@ public class ProxyController {
     }
 
 
-    @PostMapping("v1/api/scrap/") 
+    @PostMapping("/v1/api/scrap/") 
     public ResponseEntity<ScrapingResults> scrap(@RequestBody @Valid ScrapingRequest scrapingRequest) 
     throws Exception{
     
@@ -34,5 +33,4 @@ public class ProxyController {
 
     }
 
-   
 }

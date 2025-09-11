@@ -1,7 +1,6 @@
 package com.proxy.falcon.Proxy.Dto;
 
 import java.util.Map;
-
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -12,7 +11,7 @@ public class ScrapingRequest {
     String[] urls;
     
     @Size(max = 20, message = "Parse parameters array must not contain more than 20 elements")
-    String[] parsParams; 
+    Map<String, String> parsParams; 
     
     @Size(max = 20, message = "Clean parameters array must not contain more than 20 elements")
     String[] cleanParams;

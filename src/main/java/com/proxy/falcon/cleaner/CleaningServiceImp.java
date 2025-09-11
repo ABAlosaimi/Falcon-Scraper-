@@ -12,6 +12,10 @@ public class CleaningServiceImp implements CleaningService{
 
     @Override
     public String[] clean(String[] parsedStrings, String[] cleanParams) throws Exception {
+
+        if (parsedStrings == null || parsedStrings.length == 0) {
+            throw new IllegalArgumentException("No parsed strings provided.");
+        }
         
         if (cleanParams == null || cleanParams.length == 0) {
             throw new IllegalArgumentException("No cleaning parameters provided.");
@@ -48,7 +52,7 @@ public class CleaningServiceImp implements CleaningService{
         .map(future -> ((CompletableFuture<String>) future).join())
         .toArray(String[]::new);
 
-    return cleaned;
+        return cleaned;
     }
     
 }

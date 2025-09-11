@@ -55,8 +55,8 @@ public class ProxyServiceImp implements ProxyService {
 
 
     @Override
-    @Cacheable(value = "scrapingCache", key = "#urls")
-    public ScrapingResults scrapAndParse(String[] urls,String[] parsParams,String[] cleanParams, Map<String, String> userHeaders) 
+    // @Cacheable(value = "scrapingCache", key = "#urls")
+    public ScrapingResults scrapAndParse(String[] urls, Map<String, String> parsParams,String[] cleanParams, Map<String, String> userHeaders) 
     throws Exception {
 
         CompletableFuture<String[]> scrapedData = parallelScraping(urls, userHeaders);
