@@ -2,8 +2,7 @@ package com.proxy.falcon.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -27,16 +26,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    @ExceptionHandler(RequestBodyException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(RequestBodyException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Invalid request body: " + ex.getMostSpecificCause().getMessage());
+                .body(ex.getMessage());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    @ExceptionHandler(HttpMessageConversionException.class)
+    public ResponseEntity<Object> handleHttpMessageConversionException(HttpMessageConversionException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Validation failed: " + ex.getBindingResult().getAllErrors());
+                .body("Invalid request body format: " + ex.getMessage());
     }
 
 }
